@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class ExtinguisherManager : MonoBehaviour
 {
+    public static ExtinguisherManager instance;
+
     public HoseController hoseController;
+    [HideInInspector]
+    public bool ready;
     public bool handlePressed;
     public float maximumFoamCapacity = 10f;
     public float currentFoamCapacity = 10f;
@@ -15,16 +19,42 @@ public class ExtinguisherManager : MonoBehaviour
     public AudioClip readyClip;
     public AudioClip extinguishClip;
 
-    private AudioSource source;
+    public ParticleSystem particles;
 
+    private AudioSource source;
+   
     private void Awake()
     {
         source = GetComponent<AudioSource>();
+        instance = this;
     }
 
-    public void PressHandle(bool pressed)
+    private void Update()
+    {
+        if (!extinguishing) return;
+
+        float newCurrentFoamCapacity = Mathf.Clamp(currentFoamCapacity - Time.deltaTime, 0f, 10f);
+        if (currentFoamCapacity > 0 && newCurrentFoamCapacity <= 0)
+        {
+            currentFoamCapacity = newCurrentFoamCapacity;
+            ChangeExtinguishState();
+        }
+        else
+        {
+            currentFoamCapacity = newCurrentFoamCapacity; //duplicated from above because of checking the variable in if
+        }
+    }
+
+    public void OnPressHandle(bool pressed)
     {
         handlePressed = pressed;
+
+        ChangeExtinguishState();
+    }
+
+    private void ChangeExtinguishState()
+    {
+        SetEmission(extinguishing);
 
         if (extinguishing)
         {
@@ -34,6 +64,12 @@ public class ExtinguisherManager : MonoBehaviour
         {
             source.Stop();
         }
+    }
+
+    private void SetEmission(bool enabled)
+    {
+        ParticleSystem.EmissionModule em = particles.emission;
+        em.enabled = enabled;
     }
 
     private void PlaySound(AudioClip clip)
@@ -48,9 +84,11 @@ public class ExtinguisherManager : MonoBehaviour
         PlaySound(unsealClip);
     }
 
-    public void PlayReadySound()
+    public void Ready()
     {
         PlaySound(readyClip);
+
+        ready = true;
     }
 
     public void SetChangeHoseGravity()

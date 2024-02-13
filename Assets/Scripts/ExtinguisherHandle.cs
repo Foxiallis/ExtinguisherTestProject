@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class ExtinguisherHandle : MonoBehaviour
 {
-    public ExtinguisherManager manager;
     public Animator animator;
     public string valueName;
 
@@ -16,7 +15,7 @@ public class ExtinguisherHandle : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && ExtinguisherManager.instance.ready)
         {
             SetHandleStatus(true);
         }
@@ -25,6 +24,6 @@ public class ExtinguisherHandle : MonoBehaviour
     private void SetHandleStatus(bool pressed)
     {
         animator.SetBool(valueName, pressed);
-        manager.PressHandle(pressed);
+        ExtinguisherManager.instance.OnPressHandle(pressed);
     }
 }
