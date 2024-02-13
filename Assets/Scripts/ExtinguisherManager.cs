@@ -6,6 +6,52 @@ public class ExtinguisherManager : MonoBehaviour
 {
     public HoseController hoseController;
     public bool handlePressed;
+    public float maximumFoamCapacity = 10f;
+    public float currentFoamCapacity = 10f;
+
+    public bool extinguishing => handlePressed && currentFoamCapacity > 0;
+
+    public AudioClip unsealClip;
+    public AudioClip readyClip;
+    public AudioClip extinguishClip;
+
+    private AudioSource source;
+
+    private void Awake()
+    {
+        source = GetComponent<AudioSource>();
+    }
+
+    public void PressHandle(bool pressed)
+    {
+        handlePressed = pressed;
+
+        if (extinguishing)
+        {
+            PlaySound(extinguishClip);
+        }
+        else
+        {
+            source.Stop();
+        }
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        source.clip = clip;
+        source.Play();
+    }
+
+    //Functions for the animator
+    public void PlayUnsealSound()
+    {
+        PlaySound(unsealClip);
+    }
+
+    public void PlayReadySound()
+    {
+        PlaySound(readyClip);
+    }
 
     public void SetChangeHoseGravity()
     {

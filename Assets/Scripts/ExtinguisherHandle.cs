@@ -10,8 +10,7 @@ public class ExtinguisherHandle : MonoBehaviour
     {
         if (Input.GetMouseButtonUp(0))
         {
-            animator.SetBool(valueName, false);
-            manager.handlePressed = false;
+            SetHandleStatus(false);
         }
     }
 
@@ -19,8 +18,13 @@ public class ExtinguisherHandle : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            animator.SetBool(valueName, true);
-            manager.handlePressed = true;
+            SetHandleStatus(true);
         }
+    }
+
+    private void SetHandleStatus(bool pressed)
+    {
+        animator.SetBool(valueName, pressed);
+        manager.PressHandle(pressed);
     }
 }
