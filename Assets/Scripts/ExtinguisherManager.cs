@@ -22,14 +22,26 @@ public class ExtinguisherManager : MonoBehaviour
     public ParticleSystem particles;
 
     private AudioSource source;
+    private FillBehaviour fillBehaviour;
    
     private void Awake()
     {
-        source = GetComponent<AudioSource>();
         instance = this;
+        source = GetComponent<AudioSource>();
+        fillBehaviour = GetComponent<FillBehaviour>();
+    }
+
+    public void SetExtinguisherPosition(float position)
+    {
+        transform.position = new Vector3(transform.position.x, 3f * position, transform.position.z);
     }
 
     private void Update()
+    {
+        SetFoamCapacity();
+    }
+
+    private void SetFoamCapacity()
     {
         if (!extinguishing) return;
 
@@ -43,6 +55,8 @@ public class ExtinguisherManager : MonoBehaviour
         {
             currentFoamCapacity = newCurrentFoamCapacity; //duplicated from above because of checking the variable in if
         }
+
+        fillBehaviour.SetImageFill(currentFoamCapacity, maximumFoamCapacity);
     }
 
     public void OnPressHandle(bool pressed)
