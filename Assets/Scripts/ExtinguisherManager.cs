@@ -33,7 +33,7 @@ public class ExtinguisherManager : MonoBehaviour
 
     public void SetExtinguisherPosition(float position)
     {
-        transform.position = new Vector3(transform.position.x, 3f * position, transform.position.z);
+        transform.position = new Vector3(transform.position.x, 6f * position, transform.position.z);
     }
 
     private void Update()
@@ -45,7 +45,7 @@ public class ExtinguisherManager : MonoBehaviour
     {
         if (!extinguishing) return;
 
-        float newCurrentFoamCapacity = Mathf.Clamp(currentFoamCapacity - Time.deltaTime, 0f, 10f);
+        float newCurrentFoamCapacity = Mathf.Clamp(currentFoamCapacity - Time.deltaTime, 0f, maximumFoamCapacity);
         if (currentFoamCapacity > 0 && newCurrentFoamCapacity <= 0)
         {
             currentFoamCapacity = newCurrentFoamCapacity;
@@ -93,15 +93,18 @@ public class ExtinguisherManager : MonoBehaviour
     }
 
     //Functions for the animator
-    public void PlayUnsealSound()
+    public void Unseal()
     {
         PlaySound(unsealClip);
+
+        TooltipManager.instance.SetTooltip("hose");
     }
 
     public void Ready()
     {
         PlaySound(readyClip);
 
+        TooltipManager.instance.SetTooltip("handle");
         ready = true;
     }
 

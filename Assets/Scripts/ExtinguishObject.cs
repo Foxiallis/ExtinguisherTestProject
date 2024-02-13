@@ -8,6 +8,9 @@ public class ExtinguishObject : MonoBehaviour
     public ParticleSystem flameParticles;
     public float maxFlameLevel = 300f;
     public float currentFlameLevel;
+    [Tooltip("On what height does the extinguisher need to be to fully extinguish this object")]
+    public float targetExtinguisherHeight;
+    public float targetHeightBuffer;
 
     [Tooltip("How much level does a flame gain per second if not extinguished")]
     public float flamePower = 50f;
@@ -16,6 +19,8 @@ public class ExtinguishObject : MonoBehaviour
     public bool isBurning;
 
     private FillBehaviour fillBehaviour;
+
+    private bool ExtinguisherWithinRange => ExtinguisherManager.instance.transform.position.y > targetExtinguisherHeight - targetHeightBuffer && ExtinguisherManager.instance.transform.position.y < targetExtinguisherHeight + targetHeightBuffer;
 
     private void Awake()
     {
@@ -32,7 +37,7 @@ public class ExtinguishObject : MonoBehaviour
 
     private void SetBurningLevel()
     {
-        if (ExtinguisherManager.instance.extinguishing)
+        if (ExtinguisherManager.instance.extinguishing && ExtinguisherWithinRange)
         {
             currentFlameLevel = Mathf.Clamp(currentFlameLevel - (flamePower * Time.deltaTime), 0, maxFlameLevel);
         }
